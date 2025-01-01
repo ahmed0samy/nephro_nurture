@@ -1,3 +1,67 @@
+@import url('https://fonts.googleapis.com/css2?family=Bungee&family=Russo+One&display=swap');
+
+* {
+  font-family: "Russo One", serif;
+}
+:root{
+  --background-color: #D7D0E2;
+  --primary-color: #664E8E;
+  --secondary-color: #266333;
+  --third-color: #634726;
+  --light-color: #D1E3D5;
+  --second-light-color: #E3DBD1;
+}
 body {
-  background-color: red;
+  background-color: var(--background-color);
+  margin: 0;
+  padding: 0;
+  height: 200vh;
+}
+
+.container {
+  width: 100%;
+  margin: 0 auto;
+  padding: 0 16px;
+}
+
+/* Extra small devices (phones, <576px) */
+@media (max-width: 575.98px) {
+  .container {
+    max-width: 100%;
+  }
+}
+
+/* Small devices (tablets, ≥576px) */
+@media (min-width: 576px) {
+  .container {
+    max-width: 540px;
+  }
+}
+
+/* Medium devices (desktop, ≥768px) */
+@media (min-width: 768px) {
+  .container {
+    max-width: 720px;
+  }
+}
+
+/* Large devices (large desktops, ≥992px) */
+@media (min-width: 992px) {
+  .container {
+    max-width: 960px;
+  }
+}
+
+/* Extra large devices (larger desktops, ≥1200px) */
+@media (min-width: 1200px) {
+  .container {
+    max-width: 1140px;
+  }
+}
+
+/* Extra extra large devices (≥1400px) */
+@media (min-width: 1400px) {
+  .container {
+    max-width: 1320px;
+  }
 }

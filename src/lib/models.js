@@ -1,19 +1,21 @@
+// 'use server';
 import mongoose from "mongoose";
-
-const userSchema = new mongoose.Schema(
+const Schema = mongoose.Schema;
+const userSchema = new Schema(
   {
-    id: String,
+    userID: String,
     name: String,
     age: Number,
     weight: Number,
-    gender: Boolean,
-    worktime: String,
-    nuExchanges: Number,
+    gender: Number,
+    // worktime: String,
+    // nuExchanges: Number,
     solTime: String,
-    exchangesTiming: String,
+    // exchangesTime: String,
     solutionVolume: Number, // in ml
   },
   { timestamps: true }
 );
+const User = mongoose.models?.Users || mongoose.model("Users", userSchema);
 
-export const User = mongoose.models?.User || mongoose.model("User", userSchema);
+export default User;

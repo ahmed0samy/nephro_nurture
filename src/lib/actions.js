@@ -1,48 +1,89 @@
-import { User } from "./models";
+"use server";
+import User from "./models";
+import {
+  calcAgeDependentFactors,
+  calcWeightDependentFactors,
+} from "./scientificCalculations";
 import { connectToDb } from "./utils";
 
-export function calcNuExchanges() {
-  return 0;
-}
-export async function getUserData({userID}) {
-  connectToDb();
-  const user = await User.findOne({ userID });
+export async function getUserData({ userID }) {
+  await connectToDb();
   try {
-    user.findOne({ userID });
-  }catch (error) {
+    const user = await User.findOne({ userID });
+    return JSON.stringify(user);
+  } catch (error) {
     console.error("######################## Error getting user data:", error);
   }
 }
+export async function handleUserFormData(previousState, formData) {
+  function modifyData(data) {
+    const solutionVolume = calcWeightDependentFactors(
+      parseInt(data.weight)
+    ).solutionVolume;
+    const solTime = calcAgeDependentFactors(parseInt(data.age)).solTime;
+    console.log(data)
+    return {
+      userID: data.userID,
+      name: data.name,
+      age: parseInt(data.age),
+      weight: parseInt(data.weight),
+      gender: parseInt(data.gender),
+      // workTime: data.workTime,
+      solTime: solTime,
+      // nuExchanges: parseInt(data.nuExchanges),
+      // exchangesTime: data.exchangesTime,
+      solutionVolume: solutionVolume,
+    };
+  }
+
+  const data = modifyData(Object.fromEntries(formData));
+  console.log();
+  await connectToDb();
+
+  const user = await User.exists({ userID: data.userID });
+  if (user) {
+    console.log("user will be Updated.");
+    return await updateUserData(data);
+  } else {
+    return await saveNewUserData(data);
+  }
+}
+
 export async function saveNewUserData({
   userID,
   name,
   age,
   gender,
-  workTime,
+  // workTime,
   solTime,
-  exchangesTiming,
+  // exchangesTime,
   solutionVolume,
   weight,
-  nuExchanges,
+  // nuExchanges,
 }) {
-  connectToDb();
+  await connectToDb();
   const user = new User({
     userID,
     name,
     age,
     gender,
-    workTime,
+    // workTime,
     solTime,
-    exchangesTiming,
+    // exchangesTime,
     solutionVolume,
     weight,
-    nuExchanges,
+    // nuExchanges,
   });
+  console.log(user);
   try {
     await user.save();
   } catch (error) {
-    console.error("$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$ Error saving user data:", error);
+    console.error(
+      "$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$ Error saving user data:",
+      error
+    );
   }
+  console.log("User Added Successfully!!");
 }
 
 export async function updateUserData({
@@ -50,14 +91,14 @@ export async function updateUserData({
   name,
   age,
   gender,
-  workTime,
+  // workTime,
   solTime,
-  exchangesTiming,
+  // exchangesTime,
   solutionVolume,
   weight,
-  nuExchanges,
+  // nuExchanges,
 }) {
-  connectToDb();
+  await connectToDb();
   const user = await User.findOne({ userID });
   return {
     userID,
@@ -65,10 +106,10 @@ export async function updateUserData({
     age: age || user.age,
     weight: weight || user.weight,
     gender: gender || user.gender,
-    worktime: workTime || user.worktime,
-    nuExchanges: nuExchanges || user.nuExchanges,
+    // worktime: workTime || user.worktime,
+    // nuExchanges: nuExchanges || user.nuExchanges,
     solTime: solTime || user.solTime,
-    exchangesTiming: exchangesTiming || user.exchangesTiming,
+    // exchangesTime: exchangesTime || user.excha ngesTime,
     solutionVolume: solutionVolume || user.solutionVolume,
   };
 }

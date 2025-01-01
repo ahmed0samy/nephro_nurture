@@ -1,21 +1,19 @@
 import "./globals.scss";
-
+import Header from "./components/header/header";
 export const metadata = {
   title: {
-    default: "Enigma",
-    template: "%s | Enigma",
+    default: "Nehpro Nurture",
+    template: "%s | Nehpro Nurture",
   },
-  description: "Enigma app",
+  description: "Nehpro Nurture",
 };
 
 export default function RootLayout({ children }) {
   return (
     <html lang="en">
-      <body className="main">
-
-        <div className="scroller">
-          {children}
-        </div>
+      <body className="body">
+        <Header />
+        <main className="main">{children}</main>
       </body>
     </html>
   );

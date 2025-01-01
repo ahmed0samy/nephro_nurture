@@ -1,0 +1,45 @@
+.header {
+  background-color: var(--primary-color);
+  position: fixed;
+  top: 0;
+  right: 0;
+  width: 100%;
+  z-index: 999;
+  .relativeheader {
+    display: grid;
+    justify-content: space-between;
+    align-items: center;
+    // padding: 10px;
+    grid-template-columns: auto 1fr auto;
+  }
+  .logo {
+    
+    margin: 0;
+    padding: 20px 30px;
+    background-color: var(--secondary-color);
+    display: inline-block;
+    font-family: "Bungee", serif;
+    color: var(--light-color);
+  }
+  
+  nav {
+    display: inline-block;
+    ul {
+      list-style-type: none;
+      margin: 0;
+      padding: 0;
+      display: inline-block;
+      li {
+        display: inline-block;
+        margin: 0 10px;
+        color: var(--background-color);
+      }
+    }
+  }
+  
+}
+
+.gap {
+  position: relative;
+  width: 100%;
+}
