@@ -30,7 +30,7 @@ export default function Page() {
         <span>Age</span> <span>{data.age} years</span>
         <span>Weight</span> <span>{data.weight} Kg</span>
         <span>Gender</span> <span>{data.gender == 1 ? "Male" : "Female"}</span>
-        <span>Solution Time</span> <span>{data.solTime} min</span>
+        <span>Solution Time</span> <span>{data.solTime} hours</span>
         <span>Solution Volume</span> <span>{data.solutionVolume} mL</span>
         <Link href={"/edit_user"}>
           <button>Edit User Data</button>
