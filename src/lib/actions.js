@@ -99,8 +99,7 @@ export async function updateUserData({
   // nuExchanges,
 }) {
   await connectToDb();
-  const user = await User.findOne({ userID });
-  return {
+  const data =  {
     userID,
     name: name || user.name,
     age: age || user.age,
@@ -112,4 +111,6 @@ export async function updateUserData({
     // exchangesTime: exchangesTime || user.excha ngesTime,
     solutionVolume: solutionVolume || user.solutionVolume,
   };
+  const user = await User.findOneAndUpdate({ userID }, data);
+  console.log("User Updated Successfully!!");
 }
