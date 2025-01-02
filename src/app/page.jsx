@@ -59,8 +59,8 @@ export default function Page() {
           <label className={styles.switch} >
             <input className={styles.cb} type="checkbox" checked={pumpStatus}  onChange={()=>{set(usersRef, !pumpStatus)}} />
             <span className={styles.toggle}>
-              <span className={styles.left}>sucktion</span>
-              <span className={styles.right}>pumping</span>
+              <span className={styles.left}>Sucktion</span>
+              <span className={styles.right}>Pumping</span>
             </span>
           </label>
         </div>
