@@ -9,10 +9,12 @@ const userSchema = new Schema(
     weight: Number,
     gender: Number,
     // worktime: String,
-    // nuExchanges: Number,
+    nuExchanges: Number,
     solTime: String,
-    // exchangesTime: String,
+    exchangesTime: [Number],
     solutionVolume: Number, // in ml
+    lastCalculatedCycle: Number,
+    flowRate: Number, // in ml/hour
   },
   { timestamps: true }
 );

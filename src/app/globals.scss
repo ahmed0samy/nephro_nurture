@@ -1,4 +1,5 @@
 // @import url('https://fonts.googleapis.com/css2?family=Bungee&family=Russo+One&display=swap');
+// @import url('https://fonts.googleapis.com/css2?family=Bungee&family=Gabarito:wght@400..900&family=Galindo&family=Russo+One&display=swap');
 @font-face {
   font-family: 'Russo One';
   src: url('/fonts/RussoOne-Regular.ttf') format('truetype');
@@ -11,17 +12,34 @@
   font-weight: normal;
   font-style: normal;
 }
+@font-face {
+  font-family: 'Gabarito';
+  src: url('/fonts/Gabarito-VariableFont_wght.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+}
+@font-face {
+  font-family: 'Galindo';
+  src: url('/fonts/Galindo-Regular.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+}
 
 body {
-  font-family: 'MyFont', sans-serif;
+  height: fit-content !important;
 }
 * {
-  font-family: "Russo One", serif;
+  // font-family: "Russo One", serif;
+  // font-family: "Galindo", serif;
+  font-family: "Gabarito", serif;
+
+
+  transition: all 0.3s ease-in-out;
 }
 :root{
   --background-color: #D7D0E2;
-  --primary-color: #664E8E;
-  --secondary-color: #266333;
+  --primary-color: #194cb2;
+  --secondary-color: #b91313;
   --third-color: #634726;
   --light-color: #D1E3D5;
   --second-light-color: #E3DBD1;
@@ -32,6 +50,26 @@ body {
   padding: 0;
   height: 200vh;
 }
+
+
+.loading {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  width: 100%;
+  background-color: var(--background-color);
+  position: fixed;
+  z-index: 100;
+  top: 0;
+  left: 0;
+  h1 {
+    text-align: center;
+    color: var(--third-color);
+  }
+}
+
 
 .container {
   width: 100%;

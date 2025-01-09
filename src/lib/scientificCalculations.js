@@ -8,7 +8,7 @@ export function calcWeightDependentFactors(weight) {
   if (weight >= refWeight[refWeight.length - 1]) {
     return { solutionVolume: refVolume[refVolume.length - 1] };
   } else if (weight < 0) {
-    return {solutionVolume: undefined};
+    return { solutionVolume: undefined };
   }
   for (let i = 0; i < refWeight.length; i++) {
     if (weight >= refWeight[i] && weight < refWeight[i + 1]) {
@@ -43,4 +43,147 @@ export function calcAgeDependentFactors(age) {
       };
     }
   }
+}
+
+export function getTime({
+  lastCalculatedCycle,
+  solutionVolume,
+  solutionTime,
+  flowRate,
+}) {
+  const cycleTime = solutionVolume / flowRate + +solutionTime;
+  // const now = new Date;
+  // const now = 1735779159000;
+  const now = Date.now();
+
+  let nextCyclesTillDayEnd = [];
+  let allDayCycles = [];
+  let currentCycle;
+  let lastCycle;
+  let temp = lastCalculatedCycle;
+
+  while (temp < now) {
+    // get the start of cycle
+    const date = new Date(temp);
+
+    date.setHours(date.getHours() + cycleTime);
+    temp = date.getTime();
+    // console.log(temp)
+  }
+
+  currentCycle = temp; // end of the cycle'
+  lastCycle = new Date(currentCycle).setHours(
+    new Date(currentCycle).getHours() - cycleTime
+  );
+  const nowDate = new Date(now);
+  const tomorrow = new Date(
+    nowDate.getFullYear(),
+    nowDate.getMonth(),
+    nowDate.getDate() + 1
+  );
+
+  // Create a new Date object for today at 00:00
+  const startOfToday = new Date(
+    nowDate.getFullYear(),
+    nowDate.getMonth(),
+    nowDate.getDate()
+  ).getTime();
+
+  while (temp < tomorrow) {
+    const date = new Date(temp);
+    nextCyclesTillDayEnd.push(temp);
+    date.setHours(date.getHours() + cycleTime);
+    temp = date;
+    console.log("from while temp < tomorrow ", temp);
+  }
+  while (temp >= startOfToday) {
+    const date = new Date(temp);
+    date.setHours(date.getHours() - cycleTime);
+    temp = date;
+    allDayCycles.push(temp.getTime());
+    console.log("from while temp > start of the day ", temp);
+  }
+  allDayCycles.pop();
+  allDayCycles.reverse();
+  console.log(lastCycle);
+
+  console.log("current cycle ends at: ", formatDate(new Date(currentCycle)));
+  console.log("Last calculated cycle:", formatDate(new Date(lastCycle)));
+  console.log(nextCyclesTillDayEnd.map((cycle) => formatDate(new Date(cycle))));
+  // console.log("all day cycles:", allDayCycles.reverse());
+  console.log("Number of exchanges", allDayCycles.length);
+  return {
+    lastCalculatedCycle: lastCycle,
+    nextCyclesTillDayEnd,
+    currentCycle,
+    allDayCycles: allDayCycles,
+    allDayCyclesCount: allDayCycles.length,
+  };
+}
+
+export function formatDate(inputDate) {
+  const date = new Date(inputDate);
+
+  // Extract components
+  const hours = date.getHours().toString().padStart(2, "0");
+  const minutes = date.getMinutes().toString().padStart(2, "0");
+  const seconds = date.getSeconds().toString().padStart(2, "0");
+  const day = date.getDate().toString().padStart(2, "0");
+  const month = (date.getMonth() + 1).toString().padStart(2, "0"); // Months are 0-indexed
+  const year = date.getFullYear();
+
+  // Format the date
+  const formattedDate = `${hours}:${minutes}:${seconds} at ${day}-${month}-${year}`;
+  return formattedDate;
+}
+
+
+
+
+
+
+export function getNearCycles({exchanges, cycleTime, timeNow = Date.now(), sucktionTime}) {
+  let lastCycle;
+  let nextCycle;
+  let currentCycle;
+  exchanges.forEach((cycle) => {
+
+
+    let status;
+    const date = new Date(cycle);
+    date.setHours(date.getHours() + cycleTime + 1);
+    const tempNextCycle = date.getTime();
+    if (timeNow < cycle) {
+      status = "Upcoming";
+    }
+    if ((cycle < timeNow) & (tempNextCycle < timeNow)) {
+      lastCycle = cycle;
+    } else if (timeNow >= cycle) {
+      status = "Running";
+      currentCycle = cycle;
+      nextCycle = tempNextCycle;
+    }
+  });
+
+  if (timeNow < exchanges[0]) {
+    lastCycle = exchanges[0] - 2 * cycleTime;
+    currentCycle = exchanges[0] - cycleTime;
+    nextCycle = exchanges[0];
+  }
+
+  let diff = nextCycle - timeNow - sucktionTime * 3600000;
+  diff = diff <= 0 ? diff + cycleTime * 3600000 : diff;
+  const remainingTillSucktion = {
+    days: Math.floor(diff / 864e5),
+    hours: Math.floor(diff / 3600000),
+    minutes: Math.floor((diff % 36e5) / 6e4),
+    seconds: Math.floor((diff % 6e4) / 1e3),
+  };
+
+  return {
+    currentCycleStart: currentCycle,
+    nextCycleStart: nextCycle,
+    lastCycleStart: lastCycle,
+    remainingTillnextSucktion: remainingTillSucktion,
+  };
 }

@@ -3,13 +3,16 @@ import User from "./models";
 import {
   calcAgeDependentFactors,
   calcWeightDependentFactors,
+  getTime,
 } from "./scientificCalculations";
 import { connectToDb } from "./utils";
 
 export async function getUserData({ userID }) {
   await connectToDb();
+
   try {
     const user = await User.findOne({ userID });
+    console.log("user data got successfully");
     return JSON.stringify(user);
   } catch (error) {
     console.error("######################## Error getting user data:", error);
@@ -21,7 +24,7 @@ export async function handleUserFormData(previousState, formData) {
       parseInt(data.weight)
     ).solutionVolume;
     const solTime = calcAgeDependentFactors(parseInt(data.age)).solTime;
-    console.log(data)
+    console.log(data);
     return {
       userID: data.userID,
       name: data.name,
@@ -33,18 +36,19 @@ export async function handleUserFormData(previousState, formData) {
       // nuExchanges: parseInt(data.nuExchanges),
       // exchangesTime: data.exchangesTime,
       solutionVolume: solutionVolume,
+      flowRate: data.flowRate,
     };
   }
 
   const data = modifyData(Object.fromEntries(formData));
-  console.log();
   await connectToDb();
 
   const user = await User.exists({ userID: data.userID });
   if (user) {
-    console.log("user will be Updated.");
+    console.log("user will be updated.");
     return await updateUserData(data);
   } else {
+    console.log("user will be saved.");
     return await saveNewUserData(data);
   }
 }
@@ -60,8 +64,15 @@ export async function saveNewUserData({
   solutionVolume,
   weight,
   // nuExchanges,
+  flowRate,
 }) {
   await connectToDb();
+  const getTimingData = getTime({
+    lastCalculatedCycle: Date.now(),
+    solutionVolume: solutionVolume,
+    solutionTime: solTime,
+    flowRate,
+  });
   const user = new User({
     userID,
     name,
@@ -69,10 +80,12 @@ export async function saveNewUserData({
     gender,
     // workTime,
     solTime,
-    // exchangesTime,
+    exchangesTime: getTimingData.allDayCycles,
     solutionVolume,
     weight,
-    // nuExchanges,
+    nuExchanges: getTimingData.allDayCyclesCount,
+    lastCalculatedCycle: getTimingData.lastCalculatedCycle,
+    flowRate,
   });
   console.log(user);
   try {
@@ -93,24 +106,39 @@ export async function updateUserData({
   gender,
   // workTime,
   solTime,
-  // exchangesTime,
   solutionVolume,
   weight,
-  // nuExchanges,
+  flowRate,
 }) {
-  await connectToDb();
-  const data =  {
+  console.log("update function is called");
+  // await connectToDb();
+  const userJSON = await getUserData({ userID });
+  const user = JSON.parse(userJSON);
+  console.log("user data exists", user);
+
+  const getTimingData = getTime({
+    solutionVolume: solutionVolume || user.solutionVolume,
+    lastCalculatedCycle: user.lastCalculatedCycle || Date.now(),
+    solutionTime: solTime || user.solTime,
+    flowRate: flowRate || user.flowRate,
+  });
+
+  console.log(getTimingData);
+
+  const data = {
     userID,
     name: name || user.name,
     age: age || user.age,
     weight: weight || user.weight,
     gender: gender || user.gender,
     // worktime: workTime || user.worktime,
-    // nuExchanges: nuExchanges || user.nuExchanges,
+    nuExchanges: getTimingData.allDayCyclesCount,
     solTime: solTime || user.solTime,
-    // exchangesTime: exchangesTime || user.excha ngesTime,
+    exchangesTime: getTimingData.allDayCycles,
+    lastCalculatedCycle: getTimingData.lastCalculatedCycle,
     solutionVolume: solutionVolume || user.solutionVolume,
+    flowRate: flowRate || user.flowRate,
   };
-  const user = await User.findOneAndUpdate({ userID }, data);
+  await User.findOneAndUpdate({ userID }, data);
   console.log("User Updated Successfully!!");
 }

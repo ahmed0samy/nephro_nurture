@@ -10,7 +10,7 @@ export const GET = async () => {
     const data = JSON.parse(response);
     return NextResponse.json({solutionTime: data.solTime});
   } catch (err) {
-    // console.log(err);
+    console.log(err);
     throw new Error("Failed to fetch post!");
   }
 };

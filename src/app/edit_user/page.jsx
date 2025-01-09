@@ -2,6 +2,7 @@
 import { getUserData, handleUserFormData, saveNewUserData } from "@/lib/actions";
 import styles from "./edit.module.scss";
 import { useActionState, useEffect, useState } from "react";
+import Loading from "../components/loading/loading";
 export default function Page() {
   const [state, formAction] = useActionState(handleUserFormData, undefined);
     const [data, setData] = useState("No data");
@@ -22,7 +23,7 @@ export default function Page() {
       fetchData();
     }, []);
     const content = <><label htmlFor="userID">User ID:</label>
-    <input required type="text" id="userID" name="userID" defaultValue={data?.userID || ''} />
+    <input required type="text" id="userID" name="userID" readOnly value={'123'} style={{opacity: 0.5}}  />
 
     <label htmlFor="name">Name:</label>
     <input required type="text" id="name" name="name" defaultValue={data?.name || ''}/>
@@ -32,6 +33,10 @@ export default function Page() {
 
     <label htmlFor="age">Age:</label>
     <input required type="number" id="age" name="age" defaultValue={data?.age || ''}/>
+    
+    
+    <label htmlFor="flow">Flow Rate (in mL/hour):</label>
+    <input required type="number" id="flow" name="flowRate" defaultValue={data?.flowRate || 15000}/>
 
     {/* <label htmlFor="worktime">Work Time</label>
     <input required type="text" id="worktime" name="worktime" /> */}
@@ -51,7 +56,7 @@ export default function Page() {
   return (
     <div className="container">
       <form className={styles.form} action={formAction}>
-        {!loading ? content : "Loading Data..."}
+        {!loading ? content : <Loading/>}
       </form>
     </div>
   );
