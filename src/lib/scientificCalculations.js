@@ -51,7 +51,8 @@ export function getTime({
   solutionTime,
   flowRate,
 }) {
-  const cycleTime = solutionVolume / flowRate + +solutionTime;
+  const cycleTime = Number(solutionVolume) / Number(flowRate) + +solutionTime;
+  console.log('cycleTime: ', cycleTime)
   // const now = new Date;
   // const now = 1735779159000;
   const now = Date.now();

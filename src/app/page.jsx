@@ -2,7 +2,7 @@
 import { getUserData, updateUserData } from "@/lib/actions";
 import styles from "./home.module.scss";
 import { useEffect, useRef, useState } from "react";
-import { get, onValue, ref, set } from "firebase/database";
+import { get, onValue, ref, set, update } from "firebase/database";
 import { database } from "@/lib/firebase";
 import Monitor from "./monitor";
 import Loading from "./components/loading/loading";
@@ -17,6 +17,7 @@ export default function Page() {
   useEffect(() => {
     const fetchData = async () => {
       try {
+        await updateUserData({userID: '123'})
         const response = await getUserData({ userID: "123" });
         const data = JSON.parse(response);
         setData(data);
@@ -77,11 +78,11 @@ export default function Page() {
                 </span>
               </label>
             </div>
-              {/* <div className={styles.graphsContainer}>
+              <div className={styles.graphsContainer}>
                 <img src="/graph1.jpg" alt="" />
                 <img src="/graph2.jpg" alt="" />
                 <img src="/graph3.jpg" alt="" />
-              </div> */}
+              </div>
           </div>
         </div>
       );

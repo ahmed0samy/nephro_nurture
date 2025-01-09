@@ -225,10 +225,18 @@
   }
 
   .graphsContainer {
+    
     position: relative;
+    display: grid;
+    grid-template-columns: 10% 1fr 10%;
+    justify-items: center;
+    justify-content: center;
+    grid-template-rows: auto auto auto;
     padding-top: 10px;
     img {
       width: 100%;
+      margin-top: 10px;
+      grid-column: 2;
     }
   }
 }

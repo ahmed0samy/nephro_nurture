@@ -35,13 +35,13 @@ export default function Page() {
       <div className={`${styles.grid} container`}>
         <span>User ID</span> <span>{data.userID}</span>
         <span>Name</span> <span>{data.name}</span>
-        <span>Age</span> <span>{data.age} years</span>
+        <span>Age</span> <span>{data.age} Years</span>
         <span>Weight</span> <span>{data.weight} Kg</span>
         <span>Gender</span> <span>{data.gender == 1 ? "Male" : "Female"}</span>
         <span>Solution Time</span> <span>{data.solTime} hours</span>
         <span>Solution Volume</span> <span>{data.solutionVolume} mL</span>
-        <span>Flow Rate</span> <span>{data.flowRate} mL</span>
-        <span>Last calculated cycle date</span>
+        <span>Flow Rate</span> <span>{data.flowRate} mL/hour</span>
+        {/* <span>Last calculated cycle date</span> */}
         <span>{formatDate(new Date(data.lastCalculatedCycle))}</span>
         <span>All today cycles</span>{" "}
         <span>
