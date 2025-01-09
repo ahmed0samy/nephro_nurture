@@ -61,7 +61,7 @@ export default function Page() {
   return (
     <div>
       <div className="container">
-        <h1>{!loading ? content : <Loading/>}</h1>
+        {!loading ? <h1>{content}</h1> : <Loading/>}
       </div>
     </div>
   );
