@@ -89,9 +89,14 @@ export default function Monitor({ data }) {
 
   const lineLengthRatio = (now - startOfDay) / (endOfDay - startOfDay);
   console.log("next cycle at: ", formatDate(nextCycle));
-
+  let currentCycleForCycleLine
+  if (now < nextCycle & now > nextCycle - sucktionTime * 3600000) {
+    currentCycleForCycleLine = nextCycle
+  }  else {
+    currentCycleForCycleLine = currentCycle
+  }
   const cycleLineLengthRatio =
-    (now - currentCycle) / (nextCycle - sucktionTime * 3600000 - currentCycle);
+    (now - currentCycleForCycleLine) / (nextCycle - sucktionTime * 3600000 - currentCycle);
 
 
   return (
