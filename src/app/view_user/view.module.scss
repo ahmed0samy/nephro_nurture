@@ -14,7 +14,7 @@
     align-items: center;
   }
   span:nth-child(odd) {
-    background-color: var(--third-color);
+    background-color: var(--primary-color);
     color: var(--background-color);
   }
   span:nth-child(even) {
