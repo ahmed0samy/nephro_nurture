@@ -228,11 +228,11 @@
     
     position: relative;
     display: grid;
-    grid-template-columns: 10% 1fr 10%;
+    grid-template-columns: 10% 800px 10%;
     justify-items: center;
     justify-content: center;
     grid-template-rows: auto auto auto;
-    padding-top: 10px;
+    padding-top: 60px;
     img {
       width: 100%;
       margin-top: 10px;
