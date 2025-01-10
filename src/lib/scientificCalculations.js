@@ -45,82 +45,6 @@ export function calcAgeDependentFactors(age) {
   }
 }
 
-export function getTime({
-  lastCalculatedCycle,
-  solutionVolume,
-  solutionTime,
-  flowRate,
-}) {
-  const cycleTime = Number(solutionVolume) / Number(flowRate) + +solutionTime;
-  console.log('cycleTime: ', cycleTime)
-  // const now = new Date;
-  // const now = 1735779159000;
-  const now = Date.now();
-
-  let nextCyclesTillDayEnd = [];
-  let allDayCycles = [];
-  let currentCycle;
-  let lastCycle;
-  let temp = lastCalculatedCycle;
-
-  while (temp < now) {
-    // get the start of cycle
-    const date = new Date(temp);
-
-    date.setHours(date.getHours() + cycleTime);
-    temp = date.getTime();
-    // console.log(temp)
-  }
-
-  currentCycle = temp; // end of the cycle'
-  lastCycle = new Date(currentCycle).setHours(
-    new Date(currentCycle).getHours() - cycleTime
-  );
-  const nowDate = new Date(now);
-  const tomorrow = new Date(
-    nowDate.getFullYear(),
-    nowDate.getMonth(),
-    nowDate.getDate() + 1
-  );
-
-  // Create a new Date object for today at 00:00
-  const startOfToday = new Date(
-    nowDate.getFullYear(),
-    nowDate.getMonth(),
-    nowDate.getDate()
-  ).getTime();
-
-  while (temp < tomorrow) {
-    const date = new Date(temp);
-    nextCyclesTillDayEnd.push(temp);
-    date.setHours(date.getHours() + cycleTime);
-    temp = date;
-    console.log("from while temp < tomorrow ", temp);
-  }
-  while (temp >= startOfToday) {
-    const date = new Date(temp);
-    date.setHours(date.getHours() - cycleTime);
-    temp = date;
-    allDayCycles.push(temp.getTime());
-    console.log("from while temp > start of the day ", temp);
-  }
-  allDayCycles.pop();
-  allDayCycles.reverse();
-  console.log(lastCycle);
-
-  console.log("current cycle ends at: ", formatDate(new Date(currentCycle)));
-  console.log("Last calculated cycle:", formatDate(new Date(lastCycle)));
-  console.log(nextCyclesTillDayEnd.map((cycle) => formatDate(new Date(cycle))));
-  // console.log("all day cycles:", allDayCycles.reverse());
-  console.log("Number of exchanges", allDayCycles.length);
-  return {
-    lastCalculatedCycle: lastCycle,
-    nextCyclesTillDayEnd,
-    currentCycle,
-    allDayCycles: allDayCycles,
-    allDayCyclesCount: allDayCycles.length,
-  };
-}
 
 export function formatDate(inputDate) {
   const date = new Date(inputDate);
@@ -148,21 +72,18 @@ export function getNearCycles({exchanges, cycleTime, timeNow = Date.now(), suckt
   let nextCycle;
   let currentCycle;
   exchanges.forEach((cycle) => {
-
-
     let status;
-    const date = new Date(cycle);
-    date.setHours(date.getHours() + cycleTime + 1);
+    const date = new Date(cycle+ cycleTime*3600000);
     const tempNextCycle = date.getTime();
     if (timeNow < cycle) {
       status = "Upcoming";
     }
-    if ((cycle < timeNow) & (tempNextCycle < timeNow)) {
+    if ((cycle < timeNow) & (tempNextCycle > timeNow)) {
       lastCycle = cycle;
     } else if (timeNow >= cycle) {
       status = "Running";
-      currentCycle = cycle;
-      nextCycle = tempNextCycle;
+      currentCycle = tempNextCycle;
+      nextCycle = tempNextCycle+cycleTime*3600000;
     }
   });
 
@@ -186,5 +107,86 @@ export function getNearCycles({exchanges, cycleTime, timeNow = Date.now(), suckt
     nextCycleStart: nextCycle,
     lastCycleStart: lastCycle,
     remainingTillnextSucktion: remainingTillSucktion,
+  };
+}
+
+
+
+export function getTime({
+  lastCalculatedCycle,
+  solutionVolume,
+  solutionTime,
+  flowRate,
+}) {
+  const cycleTime = Number(solutionVolume) / Number(flowRate) + Number(solutionTime);
+  console.log('cycleTime: ', cycleTime)
+  // const now = new Date;
+  // const now = 1735779159000;
+  const now = Date.now();
+  console.log('The entered lastCalculated Time: ', formatDate(new Date(lastCalculatedCycle)))
+  let nextCyclesTillDayEnd = [];
+  let allDayCycles = [];
+  let currentCycle;
+  let lastCycle;
+  let temp = lastCalculatedCycle;
+  console.log('"temp" before removing ', cycleTime, ' from it is: ', formatDate(new Date(temp)))
+
+  while (temp < now) {
+    // get the start of cycle
+    const date = new Date(temp);
+
+    date.setHours(date.getHours() + cycleTime);
+    temp = date.getTime();
+  }
+  
+  currentCycle = temp; // end of the cycle'
+  // lastCycle = new Date(currentCycle)
+  lastCycle = new Date(currentCycle).getTime()
+  console.log('"temp" after removing ', cycleTime, ' from it is: ', formatDate((lastCycle)))
+  // lastCycle = new Date(currentCycle).setHours(
+  //   new Date(currentCycle).getHours() - cycleTime
+  // );
+  const nowDate = new Date(now);
+  const tomorrow = new Date(
+    nowDate.getFullYear(),
+    nowDate.getMonth(),
+    nowDate.getDate() + 1
+  );
+
+  // Create a new Date object for today at 00:00
+  const startOfToday = new Date(
+    nowDate.getFullYear(),
+    nowDate.getMonth(),
+    nowDate.getDate()
+  ).getTime();
+
+  while (temp < tomorrow) {
+    const date = new Date(temp);
+    nextCyclesTillDayEnd.push(temp);
+    date.setHours(date.getHours() + cycleTime);
+    temp = date.getTime();
+    console.log("from while temp < tomorrow ", temp);
+  }
+  while (temp >= startOfToday) {
+    const date = new Date(temp-cycleTime*3600000);
+    temp = date.getTime();
+    allDayCycles.push(temp);
+    console.log("from while temp > start of the day ", temp);
+  }
+  allDayCycles.pop();
+  allDayCycles.reverse();
+  console.log(lastCycle);
+
+  console.log("the exited Last calculated cycle:", formatDate(new Date(lastCycle)));
+  console.log("current cycle ends at: ", formatDate(new Date(currentCycle)));
+  console.log(nextCyclesTillDayEnd.map((cycle) => formatDate(new Date(cycle))));
+  // console.log("all day cycles:", allDayCycles.reverse());
+  console.log("Number of exchanges", allDayCycles.length);
+  return {
+    lastCalculatedCycle: lastCycle,
+    nextCyclesTillDayEnd,
+    currentCycle,
+    allDayCycles: allDayCycles,
+    allDayCyclesCount: allDayCycles.length,
   };
 }

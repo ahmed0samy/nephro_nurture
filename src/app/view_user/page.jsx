@@ -42,7 +42,7 @@ export default function Page() {
         <span>Solution Volume</span> <span>{data.solutionVolume} mL</span>
         <span>Flow Rate</span> <span>{data.flowRate} mL/hour</span>
         {/* <span>Last calculated cycle date</span> */}
-        <span>{formatDate(new Date(data.lastCalculatedCycle))}</span>
+        {/* <span>{formatDate(new Date(data.lastCalculatedCycle))}</span> */}
         <span>All today cycles</span>{" "}
         <span>
           <ul>

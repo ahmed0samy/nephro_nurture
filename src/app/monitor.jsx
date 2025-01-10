@@ -16,12 +16,10 @@ function formateDate(day, isSeconds = false) {
       } am`;
 }
 
-
 export default function Monitor({ data }) {
   const [timeNow, setNow] = useState(Date.now());
   const sucktionTime = data?.solutionVolume / data?.flowRate; // 0.2 hours
   const cycleTime = data.solutionVolume / data.flowRate + +data.solTime;
-
   useEffect(() => {
     const interval = setInterval(() => {
       setNow(Date.now());
@@ -33,33 +31,32 @@ export default function Monitor({ data }) {
   let nearCycles = getNearCycles({ exchanges, cycleTime, sucktionTime });
   let nextCycle = nearCycles.nextCycleStart;
   let currentCycle = nearCycles.currentCycleStart;
-  const remainingTillSucktion = nearCycles.remainingTillnextSucktion
+  const remainingTillSucktion = nearCycles.remainingTillnextSucktion;
 
   const timeElement = exchanges?.map((cycle, i, arr) => {
     let status;
     const date = new Date(cycle);
 
     // Calculate the position as a percentage of the cycle
-    const secondsIntoDay = date.getHours() * 3600 + date.getMinutes() * 60 + date.getSeconds();
+    const secondsIntoDay =
+      date.getHours() * 3600 + date.getMinutes() * 60 + date.getSeconds();
 
-    date.setHours(date.getHours() + cycleTime + 1);
+    date.setHours(date.getHours() + cycleTime);
     const tempNextCycle = date.getTime();
     if (timeNow < cycle) {
       status = "Upcoming";
     }
     if ((cycle < timeNow) & (tempNextCycle < timeNow)) {
       status = "Done";
-    } else if (timeNow >= cycle) {
+    } else if ((timeNow >= cycle) & (timeNow < tempNextCycle)) {
       status = "Running";
     }
-
-
 
     return (
       <li
         className={styles[status]}
         key={i}
-        style={{ left: `${((secondsIntoDay) / 86400) * 100}%` }} // Set the left property dynamically
+        style={{ left: `${(secondsIntoDay / 86400) * 100}%` }} // Set the left property dynamically
       >
         <span>{formateDate(new Date(cycle))}</span>
         <span>{status}</span>
@@ -85,20 +82,19 @@ export default function Monitor({ data }) {
     59
   );
 
-
-
   const lineLengthRatio = (now - startOfDay) / (endOfDay - startOfDay);
   console.log("next cycle at: ", formatDate(nextCycle));
-  let currentCycleForCycleLine
-  if (now < nextCycle & now > nextCycle - sucktionTime * 3600000) {
-    currentCycleForCycleLine = nextCycle
-  }  else {
-    currentCycleForCycleLine = currentCycle
+  console.log("current cycle at: ", formatDate(currentCycle));
+  let currentCycleForCycleLine;
+  if ((now < nextCycle) & (now > nextCycle - sucktionTime * 3600000)) {
+    currentCycleForCycleLine = nextCycle;
+  } else {
+    currentCycleForCycleLine = currentCycle;
   }
   const cycleLineLengthRatio =
-    (now - currentCycleForCycleLine) / (nextCycle - sucktionTime * 3600000 - currentCycle);
-
-
+    (now - currentCycle) /
+    (nextCycle - sucktionTime * 3600000 - currentCycle);
+  console.log('next cycle: ', formateDate(new Date(nextCycle)))
   return (
     <>
       <div className={styles.monitor}>
