@@ -45,7 +45,6 @@ export function calcAgeDependentFactors(age) {
   }
 }
 
-
 export function formatDate(inputDate) {
   const date = new Date(inputDate);
 
@@ -62,18 +61,19 @@ export function formatDate(inputDate) {
   return formattedDate;
 }
 
-
-
-
-
-
-export function getNearCycles({exchanges, cycleTime, timeNow = Date.now(), sucktionTime}) {
+export function getNearCycles({
+  exchanges,
+  cycleTime,
+  timeNow = Date.now(),
+  sucktionTime,
+}) {
   let lastCycle;
   let nextCycle;
   let currentCycle;
+
   exchanges.forEach((cycle) => {
     let status;
-    const date = new Date(cycle+ cycleTime*3600000);
+    const date = new Date(cycle + cycleTime * 3600000);
     const tempNextCycle = date.getTime();
     if (timeNow < cycle) {
       status = "Upcoming";
@@ -83,7 +83,7 @@ export function getNearCycles({exchanges, cycleTime, timeNow = Date.now(), suckt
     } else if (timeNow >= cycle) {
       status = "Running";
       currentCycle = tempNextCycle;
-      nextCycle = tempNextCycle+cycleTime*3600000;
+      nextCycle = tempNextCycle + cycleTime * 3600000;
     }
   });
 
@@ -94,6 +94,9 @@ export function getNearCycles({exchanges, cycleTime, timeNow = Date.now(), suckt
   }
 
   let diff = nextCycle - timeNow - sucktionTime * 3600000;
+  console.log("diff: ", diff);
+  console.log("diff: ");
+
   diff = diff <= 0 ? diff + cycleTime * 3600000 : diff;
   const remainingTillSucktion = {
     days: Math.floor(diff / 864e5),
@@ -110,26 +113,33 @@ export function getNearCycles({exchanges, cycleTime, timeNow = Date.now(), suckt
   };
 }
 
-
-
 export function getTime({
   lastCalculatedCycle,
   solutionVolume,
   solutionTime,
   flowRate,
 }) {
-  const cycleTime = Number(solutionVolume) / Number(flowRate) + Number(solutionTime);
-  console.log('cycleTime: ', cycleTime)
+  const cycleTime =
+    Number(solutionVolume) / Number(flowRate) + Number(solutionTime);
+  console.log("cycleTime: ", cycleTime);
   // const now = new Date;
   // const now = 1735779159000;
   const now = Date.now();
-  console.log('The entered lastCalculated Time: ', formatDate(new Date(lastCalculatedCycle)))
+  console.log(
+    "The entered lastCalculated Time: ",
+    formatDate(new Date(lastCalculatedCycle))
+  );
   let nextCyclesTillDayEnd = [];
   let allDayCycles = [];
   let currentCycle;
   let lastCycle;
   let temp = lastCalculatedCycle;
-  console.log('"temp" before removing ', cycleTime, ' from it is: ', formatDate(new Date(temp)))
+  console.log(
+    '"temp" before removing ',
+    cycleTime,
+    " from it is: ",
+    formatDate(new Date(temp))
+  );
 
   while (temp < now) {
     // get the start of cycle
@@ -138,11 +148,16 @@ export function getTime({
     date.setHours(date.getHours() + cycleTime);
     temp = date.getTime();
   }
-  
+
   currentCycle = temp; // end of the cycle'
   // lastCycle = new Date(currentCycle)
-  lastCycle = new Date(currentCycle).getTime()
-  console.log('"temp" after removing ', cycleTime, ' from it is: ', formatDate((lastCycle)))
+  lastCycle = new Date(currentCycle).getTime();
+  console.log(
+    '"temp" after removing ',
+    cycleTime,
+    " from it is: ",
+    formatDate(lastCycle)
+  );
   // lastCycle = new Date(currentCycle).setHours(
   //   new Date(currentCycle).getHours() - cycleTime
   // );
@@ -168,7 +183,8 @@ export function getTime({
     console.log("from while temp < tomorrow ", temp);
   }
   while (temp >= startOfToday) {
-    const date = new Date(temp-cycleTime*3600000);
+    const date = new Date(temp);
+    date.setHours(date.getHours() - cycleTime);
     temp = date.getTime();
     allDayCycles.push(temp);
     console.log("from while temp > start of the day ", temp);
@@ -177,7 +193,10 @@ export function getTime({
   allDayCycles.reverse();
   console.log(lastCycle);
 
-  console.log("the exited Last calculated cycle:", formatDate(new Date(lastCycle)));
+  console.log(
+    "the exited Last calculated cycle:",
+    formatDate(new Date(lastCycle))
+  );
   console.log("current cycle ends at: ", formatDate(new Date(currentCycle)));
   console.log(nextCyclesTillDayEnd.map((cycle) => formatDate(new Date(cycle))));
   // console.log("all day cycles:", allDayCycles.reverse());
@@ -189,4 +208,26 @@ export function getTime({
     allDayCycles: allDayCycles,
     allDayCyclesCount: allDayCycles.length,
   };
+}
+
+let mainPumping = false;
+let mainSucktion = true;
+
+export function setPumping(value) {
+  mainPumping = value;
+  console.log(mainPumping);
+}
+
+export function setSucktion(value) {
+  mainSucktion = value;
+  console.log(mainSucktion);
+}
+
+export function getPumping() {
+  console.log(mainPumping);
+  return mainPumping;
+}
+export function getSucktion() {
+  console.log(mainSucktion);
+  return mainSucktion;
 }

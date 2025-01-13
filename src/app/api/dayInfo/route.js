@@ -1,5 +1,5 @@
 import { getUserData, updateUserData } from "@/lib/actions";
-import { getNearCycles } from "@/lib/scientificCalculations";
+import { getNearCycles, getPumping, getSucktion, mainPumping, mainSucktion } from "@/lib/scientificCalculations";
 import { connectToDb } from "@/lib/utils";
 import { NextResponse } from "next/server";
 
@@ -37,8 +37,11 @@ export const GET = async () => {
         nextCycle,
         currentCycle,
         remainingTillSucktion,
-        now 
+        now,
+        isPumping: getPumping(),
+        isSucking: getSucktion(),
       }
+
       return NextResponse.json(data);
     } else {
       console.log('error while getting data, at day_info/route.jsx')

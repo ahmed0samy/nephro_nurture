@@ -7,17 +7,24 @@ import { database } from "@/lib/firebase";
 import Monitor from "./monitor";
 import Loading from "./components/loading/loading";
 import ErrorScreen from "./components/error/error";
+import { getPumping, getSucktion, mainPumping, mainSucktion, setPumping, setSucktion } from "@/lib/scientificCalculations";
 export default function Page() {
   const [loading, setLoading] = useState(true);
   const [pumpStatus, setPumpStatus] = useState(false);
   const element1Ref = useRef(0);
   const [width, setWidth] = useState(0);
-
+  const [pumping, setpumping] = useState(getPumping())
+  const [sucktion, setsucktion] = useState(getSucktion())
   const [data, setData] = useState(undefined);
   useEffect(() => {
     const fetchData = async () => {
       try {
         await updateUserData({userID: '123'})
+
+      } catch (err){
+        console.log('error while updating, from page.jsx: ', err)
+      }
+      try {
         const response = await getUserData({ userID: "123" });
         const data = JSON.parse(response);
         setData(data);
@@ -30,16 +37,16 @@ export default function Page() {
     fetchData();
   }, []);
 
-  const usersRef = ref(database, "pumpStatus");
+  // const usersRef = ref(database, "/pumpStatus");
 
-  useEffect(() => {
-    onValue(usersRef, (snapshot) => {
-      const data = snapshot.val();
-      console.log("Data changed:", data);
-      console.log(snapshot.val()); // Output the data as an object
-      setPumpStatus(data);
-    });
-  }, []);
+  // useEffect(() => {
+  //   onValue(usersRef, (snapshot) => {
+  //     const data = snapshot.val();
+  //     console.log("Data changed:", data);
+  //     console.log(snapshot.val()); // Output the data as an object
+  //     setPumpStatus(data);
+  //   });
+  // }, []);
 
   if (loading) {
     return <Loading />;
@@ -62,18 +69,44 @@ export default function Page() {
             <h2>User cycles</h2>
             <h3>You have {data?.nuExchanges} Exchanges Today</h3>
             <Monitor data={data} />
+
+
+            
             <div className={styles.pumpSwitch}>
               <label className={styles.switch}>
                 <input
                   className={styles.cb}
                   type="checkbox"
-                  checked={pumpStatus}
+                  checked={sucktion}
                   onChange={() => {
-                    set(usersRef, !pumpStatus);
+                    // set(usersRef, !pumpStatus);
+                    setsucktion(!sucktion)
+                    setSucktion(sucktion)
+                    
                   }}
                 />
                 <span className={styles.toggle}>
-                  <span className={styles.left}>Sucktion</span>
+                  <span className={styles.left}>Off</span>
+                  <span className={styles.right}>Sucktion</span>
+                </span>
+              </label>
+            </div>
+            
+            
+            <div className={styles.pumpSwitch}>
+              <label className={styles.switch}>
+                <input
+                  className={styles.cb}
+                  type="checkbox"
+                  checked={pumping}
+                  onChange={() => {
+                    // set(usersRef, !pumpStatus);
+                    setpumping(!pumping)
+                    setPumping(pumping)
+                  }}
+                />
+                <span className={styles.toggle}>
+                  <span className={styles.left}>Off</span>
                   <span className={styles.right}>Pumping</span>
                 </span>
               </label>
