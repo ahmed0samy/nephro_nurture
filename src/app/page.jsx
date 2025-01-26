@@ -7,14 +7,11 @@ import { database } from "@/lib/firebase";
 import Monitor from "./monitor";
 import Loading from "./components/loading/loading";
 import ErrorScreen from "./components/error/error";
-import { getPumping, getSucktion, mainPumping, mainSucktion, setPumping, setSucktion } from "@/lib/scientificCalculations";
 export default function Page() {
   const [loading, setLoading] = useState(true);
   const [pumpStatus, setPumpStatus] = useState(false);
   const element1Ref = useRef(0);
   const [width, setWidth] = useState(0);
-  const [pumping, setpumping] = useState(getPumping())
-  const [sucktion, setsucktion] = useState(getSucktion())
   const [data, setData] = useState(undefined);
   useEffect(() => {
     const fetchData = async () => {

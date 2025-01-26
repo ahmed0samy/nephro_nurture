@@ -70,23 +70,17 @@ export function getNearCycles({
   let lastCycle;
   let nextCycle;
   let currentCycle;
+  let msCycleTime = cycleTime * 3600000;
 
-  exchanges.forEach((cycle) => {
-    let status;
-    const date = new Date(cycle + cycleTime * 3600000);
-    const tempNextCycle = date.getTime();
-    if (timeNow < cycle) {
-      status = "Upcoming";
-    }
-    if ((cycle < timeNow) & (tempNextCycle > timeNow)) {
-      lastCycle = cycle;
-    } else if (timeNow >= cycle) {
-      status = "Running";
-      currentCycle = tempNextCycle;
-      nextCycle = tempNextCycle + cycleTime * 3600000;
-    }
-  });
-
+for (let i = 0; i < exchanges.length; i++) {
+  const cycle = exchanges[i];
+  if (timeNow > cycle & timeNow < cycle + msCycleTime){
+    currentCycle = cycle;
+    lastCycle = currentCycle - msCycleTime
+    nextCycle = currentCycle + msCycleTime
+    break;
+  }
+}
   if (timeNow < exchanges[0]) {
     lastCycle = exchanges[0] - 2 * cycleTime;
     currentCycle = exchanges[0] - cycleTime;
@@ -113,50 +107,58 @@ export function getNearCycles({
   };
 }
 
-
-export function getTime({lastCalculatedCycle, solutionVolume, solutionTime, flowRate}){
-  const totalSolutionTime = +(solutionVolume)/+(flowRate) + +(solutionTime); // hours
-  const msTotalSolutionTime = totalSolutionTime * 60 * 60 * 1000 
+export function getTime({
+  lastCalculatedCycle,
+  solutionVolume,
+  solutionTime,
+  flowRate,
+}) {
+  const totalSolutionTime = +solutionVolume / +flowRate + +solutionTime; // hours
+  const msTotalSolutionTime = totalSolutionTime * 60 * 60 * 1000;
   // const virtual = new Date("2025-1-26 06:30:06");
   // const now = virtual.getTime();
-  const now = (Date.now());
-  const startOfDay = new Date(now)
-  startOfDay.setHours(0)
-  startOfDay.setMinutes(0)
-  startOfDay.setSeconds(0)
-  const msStartOfDay = startOfDay.getTime()
-  const endOfDay = new Date(msStartOfDay + 24 * 60 * 60 *1000)
-  const msEndOfDay = endOfDay.getTime()
+  const now = Date.now();
+  const startOfDay = new Date(now);
+  startOfDay.setHours(0);
+  startOfDay.setMinutes(0);
+  startOfDay.setSeconds(0);
+  const msStartOfDay = startOfDay.getTime();
+  const endOfDay = new Date(msStartOfDay + 24 * 60 * 60 * 1000);
+  const msEndOfDay = endOfDay.getTime();
   let thisCycleStart;
-  let counter = lastCalculatedCycle
-  while (counter > msStartOfDay + msTotalSolutionTime){
+  let counter = lastCalculatedCycle;
+  while (counter <= msStartOfDay) {
+    counter += msTotalSolutionTime;
+  }
+  while (counter > msStartOfDay + msTotalSolutionTime) {
     counter -= msTotalSolutionTime;
-  }  
+  }
   let allDayCycles = [];
-  while (counter < msEndOfDay){
-    if (now > counter & now < counter + msTotalSolutionTime ){
-      thisCycleStart = counter
+  while (counter < msEndOfDay) {
+    if ((now > counter) & (now < counter + msTotalSolutionTime)) {
+      thisCycleStart = counter;
     }
-    allDayCycles.push(counter)
-    counter += msTotalSolutionTime
+    allDayCycles.push(counter);
+    counter += msTotalSolutionTime;
+  }
+  if (!thisCycleStart){
+   thisCycleStart = allDayCycles[0] - msTotalSolutionTime 
   }
 
   let lastCycleStart = thisCycleStart - msTotalSolutionTime;
   let nextCycleStart = thisCycleStart + msTotalSolutionTime;
   return {
     allDayCycles,
-    formatedAllDayCycles: allDayCycles.map(e=> formatDate(e)),
+    formatedAllDayCycles: allDayCycles.map((e) => formatDate(e)),
     thisCycleStart,
     currentCycle: thisCycleStart,
-    formattedThisCycleStart: formatDate(thisCycleStart),
     lastCycleStart,
-    formattedLastCycleStart: formatDate(lastCycleStart),
     nextCycleStart,
-    formattedNextCycleStart: formatDate(nextCycleStart),
     lastCalculatedCycle: lastCycleStart,
     allDayCyclesCount: allDayCycles.length,
 
-  }    
+    formattedThisCycleStart: formatDate(thisCycleStart),
+    formattedLastCycleStart: formatDate(lastCycleStart),
+    formattedNextCycleStart: formatDate(nextCycleStart),
+  };
 }
-
-

@@ -38,8 +38,6 @@ export const GET = async () => {
         currentCycle,
         remainingTillSucktion,
         now,
-        isPumping: getPumping(),
-        isSucking: getSucktion(),
       }
 
       return NextResponse.json(data);

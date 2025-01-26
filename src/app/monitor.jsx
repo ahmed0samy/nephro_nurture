@@ -19,7 +19,8 @@ function formateDate(day, isSeconds = false) {
 export default function Monitor({ data }) {
   const [timeNow, setNow] = useState(Date.now());
   const sucktionTime = data?.solutionVolume / data?.flowRate; // 0.2 hours
-  const cycleTime = data.solutionVolume / data.flowRate + +data.solTime;
+  const cycleTime = +data.solutionVolume / +data.flowRate + +data.solTime;
+
   useEffect(() => {
     const interval = setInterval(() => {
       setNow(Date.now());
@@ -41,8 +42,12 @@ export default function Monitor({ data }) {
     const secondsIntoDay =
       date.getHours() * 3600 + date.getMinutes() * 60 + date.getSeconds();
 
-    date.setHours(date.getHours() + cycleTime);
-    const tempNextCycle = date.getTime();
+
+
+    // status = currentCycle == cycle? "Running" : currentCycle > cycle? "Done" : "Upcoming" 
+    
+
+    const tempNextCycle = cycle + cycleTime * 60 * 60 * 1000;
     if (timeNow < cycle) {
       status = "Upcoming";
     }
@@ -85,6 +90,8 @@ export default function Monitor({ data }) {
   const lineLengthRatio = (now - startOfDay) / (endOfDay - startOfDay);
   console.log("next cycle at: ", formatDate(nextCycle));
   console.log("current cycle at: ", formatDate(currentCycle));
+
+  
   let currentCycleForCycleLine;
   if ((now < nextCycle) & (now > nextCycle - sucktionTime * 3600000)) {
     currentCycleForCycleLine = nextCycle;
@@ -93,7 +100,7 @@ export default function Monitor({ data }) {
   }
   const cycleLineLengthRatio =
     (now - currentCycle) /
-    (nextCycle - sucktionTime * 3600000 - currentCycle);
+    (nextCycle-currentCycle - sucktionTime * 3600000);
   console.log('next cycle: ', formateDate(new Date(nextCycle)))
   return (
     <>
