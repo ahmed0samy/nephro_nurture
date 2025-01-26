@@ -42,21 +42,18 @@ export default function Monitor({ data }) {
     const secondsIntoDay =
       date.getHours() * 3600 + date.getMinutes() * 60 + date.getSeconds();
 
-
-
-    // status = currentCycle == cycle? "Running" : currentCycle > cycle? "Done" : "Upcoming" 
-    
+    // status = currentCycle == cycle? "Running" : currentCycle > cycle? "Done" : "Upcoming"
 
     const tempNextCycle = cycle + cycleTime * 60 * 60 * 1000;
-    if (timeNow < cycle) {
-      status = "Upcoming";
-    }
+
     if ((cycle < timeNow) & (tempNextCycle < timeNow)) {
       status = "Done";
     } else if ((timeNow >= cycle) & (timeNow < tempNextCycle)) {
       status = "Running";
     }
-
+    if (timeNow < cycle) {
+      status = "Upcoming";
+    }
     return (
       <li
         className={styles[status]}
@@ -91,7 +88,6 @@ export default function Monitor({ data }) {
   console.log("next cycle at: ", formatDate(nextCycle));
   console.log("current cycle at: ", formatDate(currentCycle));
 
-  
   let currentCycleForCycleLine;
   if ((now < nextCycle) & (now > nextCycle - sucktionTime * 3600000)) {
     currentCycleForCycleLine = nextCycle;
@@ -99,9 +95,8 @@ export default function Monitor({ data }) {
     currentCycleForCycleLine = currentCycle;
   }
   const cycleLineLengthRatio =
-    (now - currentCycle) /
-    (nextCycle-currentCycle - sucktionTime * 3600000);
-  console.log('next cycle: ', formateDate(new Date(nextCycle)))
+    (now - currentCycle) / (nextCycle - currentCycle - sucktionTime * 3600000);
+  console.log("next cycle: ", formateDate(new Date(nextCycle)));
   return (
     <>
       <div className={styles.monitor}>
