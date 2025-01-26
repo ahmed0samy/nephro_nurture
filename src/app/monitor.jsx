@@ -46,12 +46,12 @@ export default function Monitor({ data }) {
 
     const endOfCycle = cycle + cycleTime * 60 * 60 * 1000;
 
-    if ((cycle < timeNow) && (endOfCycle < timeNow)) {
+    if ((+cycle < timeNow) && (endOfCycle < timeNow)) {
       status = "Done";
-    } else if ((timeNow >= cycle) && (timeNow < endOfCycle)) {
+    } else if ((timeNow >= +cycle) && (timeNow < endOfCycle)) {
       status = "Running";
     }
-    if (timeNow < cycle) {
+    if (timeNow < +cycle) {
       status = "Upcoming";
     }
 
