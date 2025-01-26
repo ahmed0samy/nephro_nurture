@@ -44,16 +44,17 @@ export default function Monitor({ data }) {
 
     // status = currentCycle == cycle? "Running" : currentCycle > cycle? "Done" : "Upcoming"
 
-    const tempNextCycle = cycle + cycleTime * 60 * 60 * 1000;
+    const endOfCycle = cycle + cycleTime * 60 * 60 * 1000;
 
-    if ((cycle < timeNow) & (tempNextCycle < timeNow)) {
+    if ((cycle < timeNow) && (endOfCycle < timeNow)) {
       status = "Done";
-    } else if ((timeNow >= cycle) & (timeNow < tempNextCycle)) {
+    } else if ((timeNow >= cycle) && (timeNow < endOfCycle)) {
       status = "Running";
     }
     if (timeNow < cycle) {
       status = "Upcoming";
     }
+
     return (
       <li
         className={styles[status]}
