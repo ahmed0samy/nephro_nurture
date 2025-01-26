@@ -37,16 +37,16 @@ export default function Page() {
     fetchData();
   }, []);
 
-  // const usersRef = ref(database, "/pumpStatus");
+  const usersRef = ref(database, "/pumpStatus");
 
-  // useEffect(() => {
-  //   onValue(usersRef, (snapshot) => {
-  //     const data = snapshot.val();
-  //     console.log("Data changed:", data);
-  //     console.log(snapshot.val()); // Output the data as an object
-  //     setPumpStatus(data);
-  //   });
-  // }, []);
+  useEffect(() => {
+    onValue(usersRef, (snapshot) => {
+      const data = snapshot.val();
+      console.log("Data changed:", data);
+      console.log(snapshot.val()); // Output the data as an object
+      setPumpStatus(data);
+    });
+  }, []);
 
   if (loading) {
     return <Loading />;
@@ -70,7 +70,7 @@ export default function Page() {
             <h3>You have {data?.nuExchanges} Exchanges Today</h3>
             <Monitor data={data} />
 
-
+{/* 
             
             <div className={styles.pumpSwitch}>
               <label className={styles.switch}>
@@ -79,7 +79,7 @@ export default function Page() {
                   type="checkbox"
                   checked={sucktion}
                   onChange={() => {
-                    // set(usersRef, !pumpStatus);
+                    set(usersRef, !pumpStatus);
                     setsucktion(!sucktion)
                     setSucktion(sucktion)
                     
@@ -100,7 +100,7 @@ export default function Page() {
                   type="checkbox"
                   checked={pumping}
                   onChange={() => {
-                    // set(usersRef, !pumpStatus);
+                    set(usersRef, !pumpStatus);
                     setpumping(!pumping)
                     setPumping(pumping)
                   }}
@@ -110,7 +110,7 @@ export default function Page() {
                   <span className={styles.right}>Pumping</span>
                 </span>
               </label>
-            </div>
+            </div> */}
               <div className={styles.graphsContainer}>
                 <img src="/graph1.jpg" alt="" />
                 <img src="/graph2.jpg" alt="" />
