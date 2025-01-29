@@ -46,13 +46,13 @@ export default function Monitor({ data }) {
 
     const endOfCycle = cycle + cycleTime * 60 * 60 * 1000;
 
-    if ((+cycle < timeNow) && (endOfCycle < timeNow)) {
-      status = "Upcoming";
-    } else if ((timeNow >= +cycle) && (timeNow < endOfCycle)) {
+    if (+cycle < timeNow && endOfCycle < timeNow) {
+      status = "Done";
+    } else if (timeNow >= +cycle && timeNow < endOfCycle) {
       status = "Running";
     }
     if (timeNow < +cycle) {
-      status = "Done";
+      status = "Upcoming";
     }
 
     return (
@@ -130,11 +130,15 @@ export default function Monitor({ data }) {
           <li>12:00 am</li>
           <li>11:59 pm</li>
         </ol>
-        <h3>
-          Remaining
-          {` ${remainingTillSucktion.hours} : ${remainingTillSucktion.minutes} : ${remainingTillSucktion.seconds} `}
-          till next sucktion
-        </h3>
+        {nextCycle - sucktionTime * 3600000 < now ? (
+          "sucktion in process..."
+        ) : (
+          <h3>
+            Remaining
+            {` ${remainingTillSucktion.hours} : ${remainingTillSucktion.minutes} : ${remainingTillSucktion.seconds} `}
+            till next sucktion
+          </h3>
+        )}
         <div
           style={{
             width: `${100 * cycleLineLengthRatio}%`,
